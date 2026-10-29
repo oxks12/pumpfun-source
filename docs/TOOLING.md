@@ -7,9 +7,14 @@ No command here signs or sends transactions to a network. LiteSVM uses local tes
 
 ## Verify the saved snapshot
 
+Run the saved-capture gate without Python optimization (`-O`, `-OO` or
+`PYTHONOPTIMIZE`). Its integrity checks use assertions; the gate refuses an
+optimized interpreter rather than report evidence it has not checked.
+
 ```sh
 python3 scripts/verify_evidence.py
 python3 scripts/test_tooling.py
+python3 scripts/test_verify_evidence.py
 python3 scripts/analyze.py
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt

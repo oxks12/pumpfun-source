@@ -14,6 +14,8 @@ EXPECTED_CAPTURES=frozenset({
  'evidence/original/pump_amm','evidence/original/pump_fees'})
 def sha(b): return hashlib.sha256(b).hexdigest()
 def main():
+    if not __debug__:
+        raise SystemExit('Capture verification requires assertions: rerun without -O/-OO and unset PYTHONOPTIMIZE.')
     count=0
     upstream=json.loads((ROOT/'evidence/upstream/provenance.json').read_text())
     for name,expected in upstream['file_sha256'].items():

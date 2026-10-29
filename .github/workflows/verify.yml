@@ -326,6 +326,7 @@ jobs:
           - suite: evidence
             commands: |
               python scripts/verify_evidence.py
+              python scripts/test_verify_evidence.py
               python scripts/test_tooling.py
               python scripts/test_build_source_manifest.py
               python scripts/test_core_linux_v144_retention.py
