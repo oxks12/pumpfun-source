@@ -11,10 +11,10 @@ SPEC.loader.exec_module(COPY)
 
 class RulesCopy(unittest.TestCase):
     def test_authenticated_output_matches(self):
-        self.assertEqual(COPY.generate(ROOT), (ROOT / COPY.OUTPUT).read_text())
+        self.assertEqual(COPY.generate(ROOT), (ROOT / COPY.OUTPUT).read_text(encoding="utf-8"))
 
     def test_selects_web_namespace_not_conflicting_mobile_copy(self):
-        labels = COPY.extract((ROOT / COPY.SOURCE).read_text())
+        labels = COPY.extract((ROOT / COPY.SOURCE).read_text(encoding="utf-8"))
         self.assertEqual(len(labels), 32)
         self.assertIn("registration closes", labels["rule_join_solo"])
         self.assertIn("every position you hold at the start", labels["scoring_default"])

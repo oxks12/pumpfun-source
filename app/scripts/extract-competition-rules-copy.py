@@ -74,7 +74,7 @@ def extract(html):
 
 
 def generate(root):
-    manifest = json.loads((root / "evidence/web/manifest.json").read_text())
+    manifest = json.loads((root / "evidence/web/manifest.json").read_text(encoding="utf-8"))
     rows = [r for r in manifest["records"] if r.get("url") == "https://pump.fun/leaderboard"]
     if manifest["captured_at"] != "2026-10-28T10:48:45.546100+00:00" or len(rows) != 1:
         raise ValueError("Unexpected capture checkpoint")
@@ -95,8 +95,8 @@ if __name__ == "__main__":
     expected = generate(args.root)
     output = args.root / OUTPUT
     if args.check:
-        if output.read_text() != expected:
+        if output.read_text(encoding="utf-8") != expected:
             raise SystemExit("Competition rules copy differs from retained HTML JSON")
         print("Verified 32 captured competition rules labels; no JavaScript executed")
     else:
-        output.write_text(expected)
+        output.write_text(expected, encoding="utf-8")
