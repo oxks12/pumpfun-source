@@ -29,16 +29,31 @@ jobs:
         with:
           path: tooling
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /.github/workflows/pump-score-regression.yml
+            /reconstruction/harness/
+            /reconstruction/toolchain/
+            /reconstruction/base/functions.tsv
+            /reconstruction/base/original.so
+            /evidence/original/pump/deployed.so
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.base }}
           path: baseline
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /programs/pump/
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.candidate }}
           path: candidate
           persist-credentials: false
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /programs/pump/
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -66,14 +81,22 @@ jobs:
         run: >-
           python -B tooling/reconstruction/harness/build_score_pair.py
           --base baseline --candidate candidate --out "$RUNNER_TEMP/pump-score-pair"
-      - name: Retain measurements and compiler logs
+      - name: Retain measured binaries, source receipts and compiler logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pump-score-pair
+          name: pump-score-pair-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             ${{ runner.temp }}/pump-score-pair/receipt.json
             ${{ runner.temp }}/pump-score-pair/*-score.json
             ${{ runner.temp }}/pump-score-pair/base/build.log
             ${{ runner.temp }}/pump-score-pair/candidate/build.log
+            ${{ runner.temp }}/pump-score-pair/base/*.so
+            ${{ runner.temp }}/pump-score-pair/candidate/*.so
+            ${{ runner.temp }}/pump-score-pair/base/source-inputs.json
+            ${{ runner.temp }}/pump-score-pair/candidate/source-inputs.json
+            ${{ runner.temp }}/pump-score-pair/base/link-receipt.json
+            ${{ runner.temp }}/pump-score-pair/candidate/link-receipt.json
+            tooling/.github/workflows/pump-score-regression.yml
+          retention-days: 7
           if-no-files-found: warn
